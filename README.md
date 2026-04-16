@@ -120,68 +120,11 @@ Badges are granted based on the number of achievements earned. Each badge unlock
 
 ## Event Flow
 
-```
-POST /api/users/{user}/purchases
-          │
-          ▼
-   UserMadePurchase (event)
-          │
-          ▼
-   ProcessAchievements (listener)
-    ├── Checks purchase count against achievement thresholds
-    ├── Attaches new achievements → fires AchievementUnlocked (event)
-    ├── Checks achievement count against badge thresholds
-    └── Attaches new badges → fires BadgeUnlocked (event)
-                                        │
-                                        ▼
-                              ProcessCashback (listener)
-                               └── Logs ₦300 cashback payment
-                                   with unique transaction ref
-```
-
----
-
-## Project Structure
-
-```
-loyalty-program/
-├── backend/                          # Laravel 11 REST API
-│   ├── app/
-│   │   ├── Events/
-│   │   │   ├── UserMadePurchase.php
-│   │   │   ├── AchievementUnlocked.php
-│   │   │   └── BadgeUnlocked.php
-│   │   ├── Listeners/
-│   │   │   ├── ProcessAchievements.php
-│   │   │   └── ProcessCashback.php
-│   │   ├── Models/
-│   │   │   ├── User.php
-│   │   │   ├── Purchase.php
-│   │   │   ├── Achievement.php
-│   │   │   └── Badge.php
-│   │   ├── Services/
-│   │   │   └── AchievementService.php
-│   │   └── Http/Controllers/Api/
-│   │       ├── AchievementController.php
-│   │       ├── PurchaseController.php
-│   │       └── UserController.php
-│   ├── database/
-│   │   ├── migrations/
-│   │   └── seeders/
-│   └── routes/api.php
-│
-└── frontend/                         # React + Vite dashboard
-    └── src/
-        ├── api/
-        │   └── achievements.js
-        ├── components/
-        │   ├── BadgeCard.jsx
-        │   ├── AchievementGrid.jsx
-        │   ├── ProgressBar.jsx
-        │   └── LoadingSpinner.jsx
-        └── pages/
-            └── Dashboard.jsx
-```
+1. A purchase is recorded via `POST /api/users/{user}/purchases`
+2. A `UserMadePurchase` event is fired
+3. The `ProcessAchievements` listener handles the event — it checks the user's purchase count against all achievement thresholds and attaches any newly eligible achievements, firing an `AchievementUnlocked` event for each one
+4. It then checks the updated achievement count against badge thresholds and attaches any newly eligible badges, firing a `BadgeUnlocked` event for each one
+5. The `ProcessCashback` listener handles each `BadgeUnlocked` event and logs a ₦300 cashback payment with a unique transaction reference
 
 ---
 
