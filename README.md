@@ -1,103 +1,58 @@
 # Loyalty Program
 
-A full-stack e-commerce loyalty program where customers unlock achievements and earn badges as they make purchases.
+A full-stack e-commerce loyalty system where customers earn achievements and badges based on their purchase history. Built with **Laravel 11** (REST API) and **React + Vite** (customer dashboard).
 
-## Overview
+---
 
-### Achievements (unlocked by purchase count)
-| Achievement | Required Purchases |
-|---|---|
-| First Purchase | 1 |
-| 5 Purchases | 5 |
-| 10 Purchases | 10 |
-| 25 Purchases | 25 |
-| 50 Purchases | 50 |
+## Features
 
-### Badges (unlocked by achievements earned)
-| Badge | Required Achievements | Cashback |
-|---|---|---|
-| Beginner | 0 | ₦300 |
-| Bronze | 1 | ₦300 |
-| Silver | 3 | ₦300 |
-| Gold | 5 | ₦300 |
-
-Each time a new badge is unlocked a **₦300 cashback** is triggered (mocked via application logs).
+- **Achievements** — automatically unlocked as a customer hits purchase milestones (1, 5, 10, 25, 50 purchases)
+- **Badges** — tier upgrades (Beginner → Bronze → Silver → Gold) granted as achievements accumulate
+- **Cashback rewards** — every badge unlock triggers a ₦300 cashback payment (mocked via logs, ready for a real provider like Paystack or Flutterwave)
+- **Event-driven architecture** — purchases fire a `UserMadePurchase` event; listeners handle achievements, badges, and cashback independently
+- **REST API** — a single endpoint returns a user's full loyalty summary
+- **Live dashboard** — React frontend displays current badge, achievement progress, and a simulate-purchase button for demo purposes
 
 ---
 
 ## Tech Stack
 
-- **Backend**: Laravel 11 (PHP 8.2+), SQLite (default)
-- **Frontend**: React 18 + Vite
+- **Backend** — Laravel 11, PHP 8.2+
+- **Frontend** — React 18, Vite, Axios
+- **Database** — SQLite by default (MySQL and PostgreSQL also supported)
 
 ---
 
-## Setup
+## Getting Started
 
-### Prerequisites
-- PHP 8.2+
-- Composer
-- Node.js 18+
-- npm
-
----
+### Requirements
+- PHP 8.2+ and Composer
+- Node.js 18+ and npm
 
 ### Backend
 
 ```bash
 cd backend
-
-# 1. Install PHP dependencies
 composer install
-
-# 2. Set up environment
 cp .env.example .env
 php artisan key:generate
-
-# 3. Create the SQLite database file
 touch database/database.sqlite
-
-# 4. Run migrations and seed data
 php artisan migrate --seed
-
-# 5. Start the development server (runs on port 8000)
 php artisan serve
 ```
 
-The API will be available at `http://localhost:8000`.
-
-#### Using MySQL instead of SQLite
-
-Edit `.env`:
-```env
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=loyalty_program
-DB_USERNAME=your_user
-DB_PASSWORD=your_password
-```
-
-Then run `php artisan migrate --seed`.
-
----
+> **MySQL / PostgreSQL?** Update `DB_CONNECTION`, `DB_HOST`, `DB_DATABASE`, `DB_USERNAME`, and `DB_PASSWORD` in `.env`, then run `php artisan migrate --seed`.
 
 ### Frontend
 
 ```bash
 cd frontend
-
-# 1. Install dependencies
 npm install
-
-# 2. Set up environment
 cp .env.example .env
-
-# 3. Start the development server (runs on port 5173)
 npm run dev
 ```
 
-Open `http://localhost:5173` in your browser.
+Open `http://localhost:5173`.
 
 ---
 
@@ -105,9 +60,8 @@ Open `http://localhost:5173` in your browser.
 
 ### `GET /api/users/{user}/achievements`
 
-Returns the loyalty summary for a user.
+Returns the full loyalty summary for a given user.
 
-**Response:**
 ```json
 {
   "user": { "id": 1, "name": "Alice Johnson" },
@@ -121,25 +75,46 @@ Returns the loyalty summary for a user.
 
 ### `POST /api/users/{user}/purchases`
 
-Records a purchase and triggers the achievement/badge pipeline.
+Records a purchase and triggers the achievements/badges pipeline.
 
-**Request body:**
 ```json
 { "amount": 1500, "description": "Order #1234" }
 ```
 
 ### `GET /api/users`
 
-Lists all users (for demo/testing).
+Lists all users.
 
 ### `POST /api/users`
 
 Creates a new user.
 
-**Request body:**
 ```json
 { "name": "Jane Doe", "email": "jane@example.com" }
 ```
+
+---
+
+## Achievement & Badge Definitions
+
+### Achievements
+
+Achievements are unlocked based on cumulative purchase count:
+
+- **First Purchase** — 1 purchase
+- **5 Purchases** — 5 purchases
+- **10 Purchases** — 10 purchases
+- **25 Purchases** — 25 purchases
+- **50 Purchases** — 50 purchases
+
+### Badges
+
+Badges are granted based on the number of achievements earned. Each badge unlock triggers a ₦300 cashback payment:
+
+- **Beginner** — 0 achievements
+- **Bronze** — 1 achievement
+- **Silver** — 3 achievements
+- **Gold** — 5 achievements (all)
 
 ---
 
@@ -147,41 +122,21 @@ Creates a new user.
 
 ```
 POST /api/users/{user}/purchases
-         │
-         ▼
-  UserMadePurchase event fired
-         │
-         ▼
-  ProcessAchievements listener
-    ├─ checks purchase count against achievement thresholds
-    ├─ attaches newly eligible achievements to user
-    ├─ fires AchievementUnlocked event for each new achievement
-    ├─ checks achievement count against badge thresholds
-    ├─ attaches newly eligible badges to user
-    └─ fires BadgeUnlocked event for each new badge
-              │
-              ▼
-       ProcessCashback listener
-         └─ logs ₦300 cashback payment (mock provider)
-```
-
----
-
-## Demo
-
-After setup, two demo users are seeded:
-
-| Name | Email |
-|---|---|
-| Alice Johnson | alice@example.com |
-| Bob Smith | bob@example.com |
-
-Use the **"Simulate Purchase"** button on the dashboard to trigger purchases and watch achievements and badges unlock in real time.
-
-To observe cashback logs:
-```bash
-# In the backend directory
-tail -f storage/logs/laravel.log
+          │
+          ▼
+   UserMadePurchase (event)
+          │
+          ▼
+   ProcessAchievements (listener)
+    ├── Checks purchase count against achievement thresholds
+    ├── Attaches new achievements → fires AchievementUnlocked (event)
+    ├── Checks achievement count against badge thresholds
+    └── Attaches new badges → fires BadgeUnlocked (event)
+                                        │
+                                        ▼
+                              ProcessCashback (listener)
+                               └── Logs ₦300 cashback payment
+                                   with unique transaction ref
 ```
 
 ---
@@ -190,22 +145,22 @@ tail -f storage/logs/laravel.log
 
 ```
 loyalty-program/
-├── backend/                        # Laravel API
+├── backend/                          # Laravel 11 REST API
 │   ├── app/
 │   │   ├── Events/
 │   │   │   ├── UserMadePurchase.php
 │   │   │   ├── AchievementUnlocked.php
 │   │   │   └── BadgeUnlocked.php
 │   │   ├── Listeners/
-│   │   │   ├── ProcessAchievements.php  # handles UserMadePurchase
-│   │   │   └── ProcessCashback.php      # handles BadgeUnlocked
+│   │   │   ├── ProcessAchievements.php
+│   │   │   └── ProcessCashback.php
 │   │   ├── Models/
 │   │   │   ├── User.php
 │   │   │   ├── Purchase.php
 │   │   │   ├── Achievement.php
 │   │   │   └── Badge.php
 │   │   ├── Services/
-│   │   │   └── AchievementService.php   # core business logic
+│   │   │   └── AchievementService.php
 │   │   └── Http/Controllers/Api/
 │   │       ├── AchievementController.php
 │   │       ├── PurchaseController.php
@@ -214,13 +169,29 @@ loyalty-program/
 │   │   ├── migrations/
 │   │   └── seeders/
 │   └── routes/api.php
-└── frontend/                       # React + Vite
+│
+└── frontend/                         # React + Vite dashboard
     └── src/
-        ├── api/achievements.js
+        ├── api/
+        │   └── achievements.js
         ├── components/
         │   ├── BadgeCard.jsx
         │   ├── AchievementGrid.jsx
         │   ├── ProgressBar.jsx
         │   └── LoadingSpinner.jsx
-        └── pages/Dashboard.jsx
+        └── pages/
+            └── Dashboard.jsx
+```
+
+---
+
+## Demo
+
+Two users are seeded automatically: **Alice Johnson** (`alice@example.com`) and **Bob Smith** (`bob@example.com`).
+
+Select a user in the dashboard dropdown and click **Simulate Purchase** to trigger the achievement pipeline in real time.
+
+To watch cashback payments being logged:
+```bash
+tail -f backend/storage/logs/laravel.log
 ```

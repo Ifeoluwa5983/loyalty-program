@@ -1,140 +1,117 @@
-const ACHIEVEMENT_ICONS = {
-  'First Purchase': '🛍️',
-  '5 Purchases': '⭐',
-  '10 Purchases': '🔥',
-  '25 Purchases': '💎',
-  '50 Purchases': '👑',
+const ACHIEVEMENT_META = {
+  'First Purchase': { icon: '🛍️' },
+  '5 Purchases':    { icon: '⭐' },
+  '10 Purchases':   { icon: '🔥' },
+  '25 Purchases':   { icon: '💎' },
+  '50 Purchases':   { icon: '👑' },
 }
 
-function AchievementChip({ name, unlocked }) {
-  const icon = ACHIEVEMENT_ICONS[name] ?? '🏅'
-
+function StatusBadge({ unlocked }) {
   return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '12px',
-        padding: '14px 18px',
-        background: unlocked ? 'var(--color-surface-2)' : 'var(--color-surface)',
-        border: unlocked
-          ? '1.5px solid var(--color-primary)'
-          : '1.5px solid var(--color-border)',
-        borderRadius: 10,
-        opacity: unlocked ? 1 : 0.55,
-        transition: 'all 0.2s ease',
-        cursor: 'default',
-      }}
-    >
-      <div
-        style={{
-          width: 40,
-          height: 40,
-          borderRadius: 10,
-          background: unlocked ? '#7c3aed22' : '#374151',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: 20,
-          flexShrink: 0,
-          filter: unlocked ? 'none' : 'grayscale(1)',
-        }}
-      >
-        {icon}
-      </div>
-
-      <div style={{ minWidth: 0 }}>
-        <p
-          style={{
-            fontSize: '14px',
-            fontWeight: 600,
-            color: unlocked ? 'var(--color-text)' : 'var(--color-text-muted)',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-          }}
-        >
-          {name}
-        </p>
-        <p
-          style={{
-            fontSize: '11px',
-            color: unlocked ? 'var(--color-primary-light)' : 'var(--color-text-muted)',
-            fontWeight: 500,
-          }}
-        >
-          {unlocked ? '✓ Unlocked' : '🔒 Locked'}
-        </p>
-      </div>
-    </div>
+    <span style={{
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: 5,
+      fontSize: 12,
+      fontWeight: 500,
+      padding: '3px 10px',
+      borderRadius: 'var(--r-full)',
+      background: unlocked ? '#e3f1ed' : 'var(--p-surface-secondary)',
+      color: unlocked ? 'var(--p-success-text)' : 'var(--p-text-secondary)',
+      border: `1px solid ${unlocked ? '#b2ddd0' : 'var(--p-border)'}`,
+    }}>
+      <span style={{
+        width: 6,
+        height: 6,
+        borderRadius: '50%',
+        background: unlocked ? 'var(--p-success)' : 'var(--p-text-disabled)',
+        flexShrink: 0,
+      }} />
+      {unlocked ? 'Unlocked' : 'Locked'}
+    </span>
   )
 }
 
 export default function AchievementGrid({ unlocked, nextAvailable }) {
-  const allAchievements = [
+  const all = [
     ...unlocked.map((name) => ({ name, unlocked: true })),
     ...nextAvailable.map((name) => ({ name, unlocked: false })),
   ]
 
   return (
-    <div
-      style={{
-        background: 'var(--color-surface)',
-        border: '1px solid var(--color-border)',
-        borderRadius: 'var(--radius)',
-        padding: '24px',
-      }}
-    >
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '20px',
-        }}
-      >
-        <p
-          style={{
-            fontSize: '11px',
-            fontWeight: 700,
-            letterSpacing: '0.12em',
-            textTransform: 'uppercase',
-            color: 'var(--color-text-muted)',
-          }}
-        >
-          Achievements
-        </p>
-        <span
-          style={{
-            background: '#7c3aed22',
-            color: 'var(--color-primary-light)',
-            fontSize: '12px',
-            fontWeight: 700,
-            padding: '2px 10px',
-            borderRadius: 99,
-            border: '1px solid var(--color-primary)',
-          }}
-        >
-          {unlocked.length} / {allAchievements.length}
+    <div style={{
+      background: 'var(--p-surface)',
+      border: '1px solid var(--p-border)',
+      borderRadius: 'var(--r)',
+      overflow: 'hidden',
+    }}>
+      {/* Card header */}
+      <div style={{
+        padding: '12px 16px',
+        borderBottom: '1px solid var(--p-border)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+      }}>
+        <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--p-text)' }}>Achievements</p>
+        <span style={{ fontSize: 12, color: 'var(--p-text-secondary)' }}>
+          {unlocked.length} of {all.length} unlocked
         </span>
       </div>
 
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-          gap: '10px',
-        }}
-      >
-        {allAchievements.map(({ name, unlocked: isUnlocked }) => (
-          <AchievementChip key={name} name={name} unlocked={isUnlocked} />
-        ))}
-      </div>
-
-      {allAchievements.length === 0 && (
-        <p style={{ color: 'var(--color-text-muted)', fontSize: '14px', textAlign: 'center' }}>
-          No achievements yet. Start shopping!
-        </p>
+      {/* Resource list */}
+      {all.length === 0 ? (
+        <div style={{ padding: '32px 16px', textAlign: 'center' }}>
+          <p style={{ fontSize: 13, color: 'var(--p-text-secondary)' }}>
+            No achievements available yet.
+          </p>
+        </div>
+      ) : (
+        <ul style={{ listStyle: 'none' }}>
+          {all.map(({ name, unlocked: isUnlocked }, i) => {
+            const meta = ACHIEVEMENT_META[name] ?? { icon: '🏅' }
+            return (
+              <li
+                key={name}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '12px 16px',
+                  borderTop: i === 0 ? 'none' : '1px solid var(--p-border)',
+                  background: 'var(--p-surface)',
+                  gap: 12,
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <div style={{
+                    width: 32,
+                    height: 32,
+                    borderRadius: 'var(--r-sm)',
+                    background: isUnlocked ? '#e3f1ed' : 'var(--p-surface-secondary)',
+                    border: '1px solid var(--p-border)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: 16,
+                    flexShrink: 0,
+                    filter: isUnlocked ? 'none' : 'grayscale(1) opacity(0.5)',
+                  }}>
+                    {meta.icon}
+                  </div>
+                  <span style={{
+                    fontSize: 13,
+                    fontWeight: 450,
+                    color: isUnlocked ? 'var(--p-text)' : 'var(--p-text-secondary)',
+                  }}>
+                    {name}
+                  </span>
+                </div>
+                <StatusBadge unlocked={isUnlocked} />
+              </li>
+            )
+          })}
+        </ul>
       )}
     </div>
   )

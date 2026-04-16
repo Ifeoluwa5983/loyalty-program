@@ -1,26 +1,27 @@
-export default function LoadingSpinner({ message = 'Loading...' }) {
+export default function LoadingSpinner() {
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: '16px',
-        padding: '60px',
-      }}
-    >
-      <div
-        style={{
-          width: 44,
-          height: 44,
-          borderRadius: '50%',
-          border: '3px solid var(--color-border)',
-          borderTopColor: 'var(--color-primary)',
-          animation: 'spin 0.8s linear infinite',
-        }}
-      />
-      <p style={{ color: 'var(--color-text-muted)', fontSize: '14px' }}>{message}</p>
+    <div style={{
+      background: 'var(--p-surface)',
+      border: '1px solid var(--p-border)',
+      borderRadius: 'var(--r)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 10,
+      padding: '48px 24px',
+      color: 'var(--p-text-secondary)',
+      fontSize: 13,
+    }}>
+      <div style={{
+        width: 16,
+        height: 16,
+        borderRadius: '50%',
+        border: '2px solid var(--p-border)',
+        borderTopColor: 'var(--p-success)',
+        animation: 'spin 0.6s linear infinite',
+        flexShrink: 0,
+      }} />
+      Loading customer data…
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   )
