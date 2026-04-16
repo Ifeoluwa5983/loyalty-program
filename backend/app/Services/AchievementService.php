@@ -10,18 +10,12 @@ use App\Models\User;
 
 class AchievementService
 {
-    /**
-     * Process all achievements and badges after a user makes a purchase.
-     */
     public function processUserPurchase(User $user): void
     {
         $this->checkAndUnlockAchievements($user);
         $this->checkAndUnlockBadges($user);
     }
 
-    /**
-     * Check which achievements the user qualifies for and unlock new ones.
-     */
     private function checkAndUnlockAchievements(User $user): void
     {
         $purchaseCount = $user->purchases()->count();
@@ -41,9 +35,6 @@ class AchievementService
         }
     }
 
-    /**
-     * Check which badges the user qualifies for and unlock new ones.
-     */
     private function checkAndUnlockBadges(User $user): void
     {
         $achievementCount = $user->achievements()->count();
@@ -63,9 +54,6 @@ class AchievementService
         }
     }
 
-    /**
-     * Build the achievements summary payload for the API response.
-     */
     public function getUserAchievementsData(User $user): array
     {
         $allAchievements = Achievement::orderBy('required_purchases')->get();
@@ -80,12 +68,10 @@ class AchievementService
         $allBadges = Badge::orderBy('required_achievements')->get();
         $unlockedAchievementCount = count($unlockedAchievementNames);
 
-        // Highest badge whose threshold the user has met
         $currentBadge = $allBadges
             ->filter(fn ($b) => $b->required_achievements <= $unlockedAchievementCount)
             ->last();
 
-        // Lowest badge whose threshold the user hasn't met yet
         $nextBadge = $allBadges
             ->filter(fn ($b) => $b->required_achievements > $unlockedAchievementCount)
             ->first();

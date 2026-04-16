@@ -1,0 +1,20 @@
+# macOS
+.DS_Store
+
+# IDEs
+.idea/
+.vscode/
+
+# Backend
+backend/.env
+backend/vendor/
+backend/composer.lock
+backend/bootstrap/cache/
+backend/storage/
+backend/database/database.sqlite
+
+# Frontend
+frontend/.env
+frontend/node_modules/
+frontend/dist/
+frontend/package-lock.json

@@ -8,13 +8,18 @@ const api = axios.create({
   },
 })
 
+const unwrap = (payload) => (payload && typeof payload === 'object' && 'data' in payload ? payload.data : payload)
+
 export const fetchUserAchievements = (userId) =>
-  api.get(`/users/${userId}/achievements`).then((res) => res.data)
+  api.get(`/users/${userId}/achievements`).then((res) => unwrap(res.data))
 
 export const fetchUsers = () =>
-  api.get('/users').then((res) => res.data)
+  api.get('/users').then((res) => {
+    const users = unwrap(res.data)
+    return Array.isArray(users) ? users : []
+  })
 
 export const recordPurchase = (userId, amount, description = '') =>
   api
     .post(`/users/${userId}/purchases`, { amount, description })
-    .then((res) => res.data)
+    .then((res) => unwrap(res.data))
