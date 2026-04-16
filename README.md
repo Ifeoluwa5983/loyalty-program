@@ -1,25 +1,25 @@
 # Loyalty Program
 
-A full-stack e-commerce loyalty system where customers earn achievements and badges based on their purchase history. Built with **Laravel 11** (REST API) and **React + Vite** (customer dashboard).
+A full-stack e-commerce loyalty system where customers earn achievements and badges based on their purchase history. Built with Laravel 11 (REST API) and React + Vite (customer dashboard).
 
 ---
 
 ## Features
 
-- **Achievements** — automatically unlocked as a customer hits purchase milestones (1, 5, 10, 25, 50 purchases)
-- **Badges** — tier upgrades (Beginner → Bronze → Silver → Gold) granted as achievements accumulate
-- **Cashback rewards** — every badge unlock triggers a ₦300 cashback payment (mocked via logs, ready for a real provider like Paystack or Flutterwave)
-- **Event-driven architecture** — purchases fire a `UserMadePurchase` event; listeners handle achievements, badges, and cashback independently
-- **REST API** — a single endpoint returns a user's full loyalty summary
-- **Live dashboard** — React frontend displays current badge, achievement progress, and a simulate-purchase button for demo purposes
+- Achievements — automatically unlocked as a customer hits purchase milestones (1, 5, 10, 25, 50 purchases)
+- Badges — tier upgrades (Beginner → Bronze → Silver → Gold) granted as achievements accumulate
+- Cashback rewards — every badge unlock triggers a ₦300 cashback payment (mocked via logs, ready for a real provider like Paystack or Flutterwave)
+- Event-driven architecture — purchases fire a `UserMadePurchase` event; listeners handle achievements, badges, and cashback independently
+- REST API — a single endpoint returns a user's full loyalty summary
+- Live dashboard — React frontend displays current badge, achievement progress, and a simulate-purchase button for demo purposes
 
 ---
 
 ## Tech Stack
 
-- **Backend** — Laravel 11, PHP 8.2+
-- **Frontend** — React 18, Vite, Axios
-- **Database** — SQLite by default (MySQL and PostgreSQL also supported)
+- Backend — Laravel 11, PHP 8.2+
+- Frontend — React 18, Vite, Axios
+- Database — SQLite by default (MySQL and PostgreSQL also supported)
 
 ---
 
@@ -41,7 +41,7 @@ php artisan migrate --seed
 php artisan serve
 ```
 
-> **MySQL / PostgreSQL?** Update `DB_CONNECTION`, `DB_HOST`, `DB_DATABASE`, `DB_USERNAME`, and `DB_PASSWORD` in `.env`, then run `php artisan migrate --seed`.
+> MySQL / PostgreSQL? Update `DB_CONNECTION`, `DB_HOST`, `DB_DATABASE`, `DB_USERNAME`, and `DB_PASSWORD` in `.env`, then run `php artisan migrate --seed`.
 
 ### Frontend
 
@@ -101,20 +101,20 @@ Creates a new user.
 
 Achievements are unlocked based on cumulative purchase count:
 
-- **First Purchase** — 1 purchase
-- **5 Purchases** — 5 purchases
-- **10 Purchases** — 10 purchases
-- **25 Purchases** — 25 purchases
-- **50 Purchases** — 50 purchases
+- First Purchase — 1 purchase
+- 5 Purchases — 5 purchases
+- 10 Purchases — 10 purchases
+- 25 Purchases — 25 purchases
+- 50 Purchases — 50 purchases
 
 ### Badges
 
 Badges are granted based on the number of achievements earned. Each badge unlock triggers a ₦300 cashback payment:
 
-- **Beginner** — 0 achievements
-- **Bronze** — 1 achievement
-- **Silver** — 3 achievements
-- **Gold** — 5 achievements (all)
+- Beginner — 0 achievements
+- Bronze — 1 achievement
+- Silver — 3 achievements
+- Gold — 5 achievements (all)
 
 ---
 
@@ -130,9 +130,9 @@ Badges are granted based on the number of achievements earned. Each badge unlock
 
 ## Demo
 
-Two users are seeded automatically: **Alice Johnson** (`alice@example.com`) and **Bob Smith** (`bob@example.com`).
+Two users are seeded automatically: Alice Johnson (`alice@example.com`) and Bob Smith (`bob@example.com`).
 
-Select a user in the dashboard dropdown and click **Simulate Purchase** to trigger the achievement pipeline in real time.
+Select a user in the dashboard dropdown and click Simulate Purchase to trigger the achievement pipeline in real time.
 
 To watch cashback payments being logged:
 ```bash
