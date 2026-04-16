@@ -6,20 +6,20 @@ A full-stack e-commerce loyalty system where customers earn achievements and bad
 
 ## Features
 
-- Achievements — automatically unlocked as a customer hits purchase milestones (1, 5, 10, 25, 50 purchases)
-- Badges — tier upgrades (Beginner → Bronze → Silver → Gold) granted as achievements accumulate
-- Cashback rewards — every badge unlock triggers a ₦300 cashback payment (mocked via logs, ready for a real provider like Paystack or Flutterwave)
-- Event-driven architecture — purchases fire a `UserMadePurchase` event; listeners handle achievements, badges, and cashback independently
-- REST API — a single endpoint returns a user's full loyalty summary
-- Live dashboard — React frontend displays current badge, achievement progress, and a simulate-purchase button for demo purposes
+- Achievements : automatically unlocked as a customer hits purchase milestones (1, 5, 10, 25, 50 purchases)
+- Badges : tier upgrades (Beginner → Bronze → Silver → Gold) granted as achievements accumulate
+- Cashback rewards : every badge unlock triggers a ₦300 cashback payment (mocked via logs, ready for a real provider like Paystack or Flutterwave)
+- Event-driven architecture : purchases fire a `UserMadePurchase` event; listeners handle achievements, badges, and cashback independently
+- REST API : a single endpoint returns a user's full loyalty summary
+- Live dashboard : React frontend displays current badge, achievement progress, and a simulate-purchase button for demo purposes
 
 ---
 
 ## Tech Stack
 
-- Backend — Laravel 11, PHP 8.2+
-- Frontend — React 18, Vite, Axios
-- Database — SQLite by default (MySQL and PostgreSQL also supported)
+- Backend : Laravel 11, PHP 8.2+
+- Frontend : React 18, Vite, Axios
+- Database : SQLite by default (MySQL and PostgreSQL also supported)
 
 ---
 
@@ -101,20 +101,20 @@ Creates a new user.
 
 Achievements are unlocked based on cumulative purchase count:
 
-- First Purchase — 1 purchase
-- 5 Purchases — 5 purchases
-- 10 Purchases — 10 purchases
-- 25 Purchases — 25 purchases
-- 50 Purchases — 50 purchases
+- First Purchase : 1 purchase
+- 5 Purchases : 5 purchases
+- 10 Purchases : 10 purchases
+- 25 Purchases : 25 purchases
+- 50 Purchases : 50 purchases
 
 ### Badges
 
 Badges are granted based on the number of achievements earned. Each badge unlock triggers a ₦300 cashback payment:
 
-- Beginner — 0 achievements
-- Bronze — 1 achievement
-- Silver — 3 achievements
-- Gold — 5 achievements (all)
+- Beginner : 0 achievements
+- Bronze : 1 achievement
+- Silver : 3 achievements
+- Gold : 5 achievements (all)
 
 ---
 
@@ -122,7 +122,7 @@ Badges are granted based on the number of achievements earned. Each badge unlock
 
 1. A purchase is recorded via `POST /api/users/{user}/purchases`
 2. A `UserMadePurchase` event is fired
-3. The `ProcessAchievements` listener handles the event — it checks the user's purchase count against all achievement thresholds and attaches any newly eligible achievements, firing an `AchievementUnlocked` event for each one
+3. The `ProcessAchievements` listener handles the event : it checks the user's purchase count against all achievement thresholds and attaches any newly eligible achievements, firing an `AchievementUnlocked` event for each one
 4. It then checks the updated achievement count against badge thresholds and attaches any newly eligible badges, firing a `BadgeUnlocked` event for each one
 5. The `ProcessCashback` listener handles each `BadgeUnlocked` event and logs a ₦300 cashback payment with a unique transaction reference
 
